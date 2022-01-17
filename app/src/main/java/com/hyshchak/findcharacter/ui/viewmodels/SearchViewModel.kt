@@ -25,6 +25,16 @@ class SearchViewModel @Inject constructor(
 
     private val query = MutableStateFlow("")
 
+    /**
+     * It seems not the best solution for getting films,
+     * but I didn't find the best one with flows and observers, so we will request our films in both fragments
+     */
+    init {
+        viewModelScope.launch {
+            repository.getAndSaveAllFilms()
+        }
+    }
+
     fun setQuery(q: String?) {
         if (!q.isNullOrBlank() && q != query.value) {
             Log.d("ViewModel", "q = $q and query = ${query.value}")

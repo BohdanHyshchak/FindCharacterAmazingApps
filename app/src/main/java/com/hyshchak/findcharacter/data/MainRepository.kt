@@ -1,6 +1,7 @@
 package com.hyshchak.findcharacter.data
 
 import androidx.paging.*
+import com.hyshchak.findcharacter.database.entities.Film
 import com.hyshchak.findcharacter.database.entities.Person
 import com.hyshchak.findcharacter.database.entities.PersonShort
 import com.hyshchak.findcharacter.database.main.PeopleDatabase
@@ -34,4 +35,23 @@ class MainRepository @Inject constructor(
     suspend fun savePersonShort(person: PersonShort) = personDao.savePeopleShortList(listOf(person))
 
     fun getFavoriteListFromDb() = personDao.getFavoritePeopleShortList()
+
+    suspend fun getAndSaveAllFilms() {
+        if (personDao.filmsCount() == 0) {
+            val filmList = apiDataSource.getFilmsList()
+            if (filmList != null && filmList.isSuccessful) {
+                personDao.saveFilmsList(filmList.body()!!.results)
+            } else
+                personDao.saveFilmsList(emptyList())
+        }
+    }
+
+    suspend fun getFilmsByUrl(urlList: List<String>): List<String> {
+        val mutableList = mutableListOf<String>()
+        if (personDao.filmsCount() != 0)
+            for (i in urlList) {
+                mutableList.add(personDao.getFilmByUrl(i).title)
+            }
+        return mutableList
+    }
 }

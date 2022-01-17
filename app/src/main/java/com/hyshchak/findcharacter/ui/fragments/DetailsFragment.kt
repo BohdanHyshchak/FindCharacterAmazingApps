@@ -65,11 +65,21 @@ class DetailsFragment : Fragment() {
                 }
             }
         )
+
+        viewModel.filmsList.observe(
+            viewLifecycleOwner, {
+                binding.tvFilmsDescription.text = it.toString().removeSurrounding('['.toString(),
+                    ']'.toString()
+                )
+            }
+        )
+
+
     }
 
     private fun bindButton() {
         binding.btnHeart.setOnClickListener {
-            viewModel.getPersonFromFragment(PersonShort(args.personShort.name, !args.personShort.isFavorite, args.personShort.id))
+            viewModel.getPersonFromFragment(PersonShort(args.personShort.name, !viewModel.isLiked.value!!, args.personShort.id))
         }
     }
 }

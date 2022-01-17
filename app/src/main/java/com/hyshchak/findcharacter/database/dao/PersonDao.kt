@@ -2,6 +2,7 @@ package com.hyshchak.findcharacter.database.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
+import com.hyshchak.findcharacter.database.entities.Film
 import com.hyshchak.findcharacter.database.entities.Person
 import com.hyshchak.findcharacter.database.entities.PersonShort
 import kotlinx.coroutines.flow.Flow
@@ -35,4 +36,15 @@ interface PersonDao {
     @Query("SELECT COUNT(id) FROM people_short")
     fun itemsCount(): Int
 
+    /**
+     * Film DAO
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveFilmsList(filmsList: List<Film>)
+
+    @Query("SELECT * FROM films WHERE url =:url")
+    fun getFilmByUrl(url: String): Film
+
+    @Query("SELECT COUNT(url) FROM films")
+    fun filmsCount(): Int
 }
